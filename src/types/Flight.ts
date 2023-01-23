@@ -1,8 +1,10 @@
-type Flight = {
+export type Flight = {
   flightNo: string,
-  airportName: string,
+  destination: string,
   date: number,
   isArrival: boolean,
 };
 
-export default Flight;
+export type FlightWithUid = Flight & {
+  uid: string,
+};

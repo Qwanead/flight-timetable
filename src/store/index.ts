@@ -1,14 +1,15 @@
 import { createStore } from 'vuex';
 import api from '@/services/api';
-import type Flight from '@/types/Flight';
+import type { Flight, FlightWithUid } from '@/types/Flight';
 
 type FlightRaw = { [uid: string]: Flight };
 
-const initialState: { flights: Flight[] } = {
-  flights: [],
+const initialState = {
+  flights: [] as FlightWithUid[],
+  isLoaded: false,
 };
 
-const flightAdapter = (flightRaw: FlightRaw) => Object.entries(flightRaw)
+const flightAdapter = (flightRaw: FlightRaw): FlightWithUid[] => Object.entries(flightRaw)
   .map(([uid, flight]: [string, Flight]) => ({ uid, ...flight }));
 
 export default createStore({
@@ -22,12 +23,17 @@ export default createStore({
     setFlights(state, flights) {
       state.flights = flights;
     },
+    setIsLoaded(state, status) {
+      state.isLoaded = status;
+    },
   },
 
   actions: {
     async getFlights({ commit }) {
+      commit('setIsLoaded', false);
       const flightRaw = await api.flight.getAll();
       commit('setFlights', flightAdapter(flightRaw));
+      commit('setIsLoaded', true);
     },
 
     async createFlight({ dispatch }, flightData: Flight) {
@@ -35,10 +41,13 @@ export default createStore({
       await dispatch('getFlights');
     },
 
-    async editFlight(
-      { dispatch },
-      { uid, flightData }: { uid: string, flightData: Flight },
-    ) {
+    async editFlight({ dispatch }, flight: FlightWithUid) {
+      const {
+        uid, flightNo, destination, date, isArrival,
+      } = flight;
+      const flightData = {
+        flightNo, destination, date, isArrival,
+      };
       await api.flight.edit(uid, flightData);
       await dispatch('getFlights');
     },

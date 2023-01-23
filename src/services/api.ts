@@ -1,5 +1,5 @@
 import httpRequest from '@/services/httpRequest';
-import type Flight from '@/types/Flight';
+import type { Flight } from '@/types/Flight';
 
 const BASE_URL = 'https://flight-timetable-642b8-default-rtdb.firebaseio.com/flights';
 
