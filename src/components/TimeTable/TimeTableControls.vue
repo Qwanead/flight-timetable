@@ -1,7 +1,7 @@
 <template>
   <div class="table-controls">
     <BaseButton @click="$emit('edit')">
-      Редактировать
+      Изменить
     </BaseButton>
 
     <BaseButton @click="$emit('delete')">
@@ -25,5 +25,6 @@ export default defineComponent({
 <style scoped>
   .table-controls {
     display: flex;
+    gap: 10px;
   }
 </style>

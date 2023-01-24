@@ -3,6 +3,7 @@ import api from '@/services/api';
 import type { Flight, FlightWithUid } from '@/types/Flight';
 
 type FlightRaw = { [uid: string]: Flight };
+type Filter = Pick<Flight, 'flightNo' | 'destination' | 'isArrival'>;
 
 const initialState = {
   flights: [] as FlightWithUid[],
@@ -16,7 +17,22 @@ export default createStore({
   state: initialState,
 
   getters: {
-    getFlights: (state) => state.flights,
+    getFlights: (state) => (filter: Filter) => {
+      let flights = [...state.flights];
+      (Object.keys(filter) as (keyof Filter)[]).forEach((key) => {
+        const filterValue = filter[key];
+        if (typeof filterValue === 'boolean') {
+          flights = flights.filter((flight) => flight[key] === filterValue);
+        }
+
+        if (typeof filterValue === 'string') {
+          flights = flights
+            .filter((flight) => (flight[key] as string).toLowerCase()
+              .includes(filterValue.toLowerCase()));
+        }
+      });
+      return flights.sort((a, b) => b.date - a.date);
+    },
   },
 
   mutations: {

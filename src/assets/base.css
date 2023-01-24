@@ -1,11 +1,15 @@
 :root {
   --color-dark: #1C242B;
+  --color-dark-sec: #2b333b;
   --color-dark-soft: #323B44;
   --color-dark-mute: #475562;
   --color-accent: #EB7501;
+  
   --color-white: #FFFFFF;
 
   --color-background: var(--color-dark-soft);
+  --color-item: var(--color-dark-dark);
+  --color-hover: var(--color-dark-sec);
   --color-text: var(--color-dark);
   --color-text-contrast: var(--color-white);
 }

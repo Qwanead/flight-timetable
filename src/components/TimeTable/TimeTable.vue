@@ -1,13 +1,21 @@
 <template>
   <ul class="time-table">
-    <li>
+    <li class="time-table__row">
       <TimeTableHeader :header-items="headerItems" />
     </li>
 
-    <li v-for="(flight) in flights" :key="flight.uid">
+    <li
+      v-for="(flight) in flights"
+      :key="flight.uid"
+      class="time-table__row"
+    >
       <TimeTableRow :flight="flight" :header-items="headerItems" />
 
-      <TimeTableControls @edit="$emit('editItem', flight)" @delete="$emit('deleteItem', flight)" />
+      <TimeTableControls
+        v-if="isAdmin"
+        @edit="$emit('editItem', flight)"
+        @delete="$emit('deleteItem', flight)"
+      />
     </li>
   </ul>
 </template>
@@ -32,6 +40,10 @@ export default defineComponent({
     flights: {
       type: Array as PropType<FlightWithUid[]>,
       required: true,
+    },
+    isAdmin: {
+      type: Boolean,
+      default: false,
     },
   },
 
@@ -58,6 +70,27 @@ export default defineComponent({
       ] as HeaderItem[],
     };
   },
+
+  watch: {
+    flights() {
+      this.setDestinationLabel();
+    },
+  },
+
+  created() {
+    this.setDestinationLabel();
+  },
+
+  methods: {
+    setDestinationLabel() {
+      const target = this.headerItems
+        .find((item) => item.property === 'destination');
+      const isArrival = this.flights.every((flight) => flight.isArrival);
+      if (target?.label) {
+        target.label = isArrival ? 'Пункт вылета' : 'Пункт назначения';
+      }
+    },
+  },
 });
 </script>
 
@@ -65,5 +98,15 @@ export default defineComponent({
   .time-table {
     list-style: none;
     padding: 0;
+    width: fit-content;
+    display: flex;
+    gap: 3px;
+    flex-direction: column;
+  }
+
+  .time-table__row {
+    padding: 7px;
+    display: flex;
+    background-color: var(--color-dark-mute);
   }
 </style>

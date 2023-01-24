@@ -8,6 +8,20 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: HomeView,
+      children: [
+        {
+          path: '/arrival',
+          name: 'arrival',
+          component: HomeView,
+          props: (route) => ({ query: route.query }),
+        },
+        {
+          path: '/departure',
+          name: 'departure',
+          component: HomeView,
+          props: (route) => ({ query: route.query }),
+        },
+      ],
     },
   ],
 });
